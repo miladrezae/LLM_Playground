@@ -9,10 +9,9 @@ welcome_message = "Hello, introduce yourself as Artificial Milad using  2-3 sent
 client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
 
 history = [
-    {"role": "system", "content": f""" ### Instruction 
-     {instructions} \n answer technical work questions based on:
-     \n context: {context_document} \n
-    answer personal questions based on :{biography}"""},
+    {"role": "system", "content": f""" ### Instruction: {instructions} \n
+     answer technical work questions based on:\n {context_document} \n
+    answer personal questions based on : \n {biography} , Answer: """},
     {"role": "user", "content": "Say: " +  welcome_message},
 ]
 
@@ -20,12 +19,13 @@ history = [
 while True:
     completion = client.chat.completions.create(
         model="local-model", # this field is currently unused
+        stop = "11",
         messages=history,
         temperature=0.3,
         stream=True,
     )
 
-    new_message = {"role": "assistant", "content": ""}
+    new_message = {"role": "assistant", "content": "Answer: "}
     
     for chunk in completion:
         if chunk.choices[0].delta.content:
