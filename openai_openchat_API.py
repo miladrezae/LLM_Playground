@@ -3,29 +3,30 @@ from openai import OpenAI
 from prompts.prompts_resume import context_document, biography
 from prompts.instructs import instructions
 
-welcome_message = "Hello, introduce yourself as Artificial Milad using  2-3 sentences."
+welcome_message = "Hello, introduce yourself as Artificial Milad using 2-3 sentences."
 
 # Point to the local server
-client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
+# client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
+client = OpenAI(base_url="http://127.0.0.1:1234/v1", api_key="not-needed")
 
 history = [
-    {"role": "system", "content": f""" ### Instruction: {instructions} \n
-     answer technical work questions based on:\n {context_document} \n
-    answer personal questions based on : \n {biography} , Answer: """},
-    {"role": "user", "content": "Say: " +  welcome_message},
+    {"role": "system", "content": f""" Answer technical work questions based on the following:\n {context_document} \n
+    answer personal questions based on the following : \n {biography} \n 
+    ### Instruction: {instructions} """},
+    {"role": "user", "content": "Say: " +  welcome_message + "Answer: "},
 ]
 
 
 while True:
     completion = client.chat.completions.create(
         model="local-model", # this field is currently unused
-        stop = "11",
+        stop = "5",
         messages=history,
         temperature=0.3,
         stream=True,
     )
 
-    new_message = {"role": "assistant", "content": "Answer: "}
+    new_message = {"role": "assistant", "content": ""}
     
     for chunk in completion:
         if chunk.choices[0].delta.content:
