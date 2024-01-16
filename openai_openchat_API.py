@@ -1,14 +1,19 @@
 # Chat with an intelligent assistant in your terminal
 from openai import OpenAI
-from prompts.prompts_resume import Resume
+from prompts.prompts_resume import context_document, biography
+from prompts.instructs import instructions
+
+welcome_message = "Hello, introduce yourself as Artificial Milad using  2-3 sentences."
 
 # Point to the local server
 client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
 
-
 history = [
-    {"role": "system", "content": f"You are an intelligent assistant implemented by a Data Scintist named Milad Shirazi, in order to mimic his responses based on his given resume: /n{Resume}"},
-    {"role": "user", "content": "Hello, introduce yourself to someone opening this program for the first time. Be concise."},
+    {"role": "system", "content": f""" ### Instruction 
+     {instructions} \n answer technical work questions based on:
+     \n context: {context_document} \n
+    answer personal questions based on :{biography}"""},
+    {"role": "user", "content": "Say: " +  welcome_message},
 ]
 
 
@@ -16,7 +21,7 @@ while True:
     completion = client.chat.completions.create(
         model="local-model", # this field is currently unused
         messages=history,
-        temperature=0.7,
+        temperature=0.3,
         stream=True,
     )
 
