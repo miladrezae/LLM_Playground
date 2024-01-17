@@ -1,13 +1,14 @@
 # Chat with an intelligent assistant in your terminal
 from openai import OpenAI
-from prompts.prompts_resume import context_document, biography
+from prompts.contexts import context_document, biography
 from prompts.instructs import instructions
+from libs.helper import timer_func, num_tokens_from_string
 
+seed_number = 42
 welcome_message = "Hello, introduce yourself as Artificial Milad using 2-3 sentences."
 
 # Point to the local server
-# client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
-client = OpenAI(base_url="http://127.0.0.1:1234/v1", api_key="not-needed")
+client = OpenAI(base_url="http://127.0.0.1:12345/v1", api_key="not-needed")
 
 history = [
     {"role": "system", "content": f""" Answer technical work questions based on the following:\n {context_document} \n
@@ -16,14 +17,17 @@ history = [
     {"role": "user", "content": "Say: " +  welcome_message + "Answer: "},
 ]
 
+print(str(num_tokens_from_string(history[0]['content'], "cl100k_base"))+" Tokens!")
 
 while True:
     completion = client.chat.completions.create(
         model="local-model", # this field is currently unused
-        stop = "5",
+        stop = ["###", "user:", "assistant:", "instruction:", "###instruction:", "Instruction:", "User:", "Instructions:"],
         messages=history,
         temperature=0.3,
+        frequency_penalty=1,
         stream=True,
+        seed=seed_number
     )
 
     new_message = {"role": "assistant", "content": ""}
@@ -34,14 +38,6 @@ while True:
             new_message["content"] += chunk.choices[0].delta.content
 
     history.append(new_message)
-    
-    # Uncomment to see chat history
-    # import json
-    # gray_color = "\033[90m"
-    # reset_color = "\033[0m"
-    # print(f"{gray_color}\n{'-'*20} History dump {'-'*20}\n")
-    # print(json.dumps(history, indent=2))
-    # print(f"\n{'-'*55}\n{reset_color}")
 
-    print()
     history.append({"role": "user", "content": input("> ")})
+    
