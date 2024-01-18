@@ -8,7 +8,7 @@ from settings.open_ai_api import OPEN_AI_SECRET
 seed_number = 42
 welcome_message = "Hello, introduce yourself as Artificial Milad using 2-3 sentences."
 
-client = OpenAI(base_url="https://api.openai.com/v1/chat/gpt-3.5-turbo-instruct/completions", api_key="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",)#Read at #https://platform.openai.com/docs/api-reference/chat/create
+client = OpenAI(base_url="https://api.openai.com/v1/chat/completions", api_key=OPEN_AI_SECRET,)#Read at #https://platform.openai.com/docs/api-reference/chat/create
 
 history = [
     {"role": "system", "content": f""" Answer technical work questions based on the following:\n {context_document} \n
@@ -21,7 +21,7 @@ print(str(num_tokens_from_string(history[0]['content'], "cl100k_base"))+" Tokens
 
 while True:
     completion = client.chat.completions.create(
-        model="local-model", # this field is currently unused
+        model="gpt-3.5-turbo-instruct", 
         stop = ["###", "user:", "assistant:", "instruction:", "###instruction:", "Instruction:", "User:", "Instructions:"],
         messages=history,
         temperature=0.3,
