@@ -19,7 +19,7 @@ print(str(num_tokens_from_string(history[0]['content'], "cl100k_base"))+" Tokens
 
 while True:
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo-0125",#"gpt-3.5-turbo-instruct",
+        model="gpt-4",#"gpt-3.5-turbo-0125",
         messages=history,
         # prompt = history,
         stream=True,
