@@ -21,7 +21,6 @@ while True:
     completion = client.chat.completions.create(
         model="gpt-4",#"gpt-3.5-turbo-0125",
         messages=history,
-        # prompt = history,
         stream=True,
     )
 
