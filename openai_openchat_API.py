@@ -8,7 +8,8 @@ seed_number = 42
 welcome_message = "Hello, introduce yourself as Artificial Milad using 2-3 sentences."
 
 # Point to the local server
-client = OpenAI(base_url="http://127.0.0.1:12345/v1", api_key="not-needed")
+# client = OpenAI(base_url="http://127.0.0.1:12345/v1", api_key="not-needed")
+client = OpenAI(base_url="http://localhost:12345/v1", api_key="not-needed")
 
 history = [
     {"role": "system", "content": f""" Answer technical work questions based on the following:\n {context_document} \n
